@@ -1,9 +1,9 @@
-  import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import './index.css'
 import { Board } from './components/Board'
 import { NumberPad } from './components/NumberPad'
 import { Toolbar } from './components/Toolbar'
-import { StatusBar } from './components/StatusBar'
+// StatusBar removed from layout; kept for potential future use
 import { useSudoku } from './sudoku/useSudoku'
 import { getElapsedMs } from './sudoku/state'
 
@@ -24,24 +24,11 @@ function App() {
     return <div>読み込み中...</div>
   }
 
-  // 残数計算（1..9）
-  const remaining = (() => {
-    const count = new Array<number>(10).fill(9)
-    for (const v of state.grid) {
-      if (v >= 1 && v <= 9) count[v]--
-    }
-    return count
-  })()
+  // 残数計算は現UIで未使用
 
   return (
     <div className="app">
-      <Toolbar
-        onNew={actions.newGame}
-        onCheck={actions.check}
-        onReset={actions.reset}
-        onUndo={actions.undo}
-        onRedo={actions.redo}
-      />
+      <Toolbar onNew={actions.newGame} onCheck={actions.check} onUndo={actions.undo} onRedo={actions.redo} />
       <div className="main sudoku-main">
         <Board
           grid={state.grid}

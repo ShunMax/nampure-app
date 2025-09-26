@@ -4,12 +4,11 @@ import type { Difficulty } from '../sudoku/types'
 interface ToolbarProps {
   onNew: (d: Difficulty) => void
   onCheck: () => void
-  onReset: () => void
   onUndo: () => void
   onRedo: () => void
 }
 
-export const Toolbar: React.FC<ToolbarProps> = ({ onNew, onCheck, onReset, onUndo, onRedo }) => {
+export const Toolbar: React.FC<ToolbarProps> = ({ onNew, onCheck, onUndo, onRedo }) => {
   return (
     <header className="sudoku-header">
       <div className="header-group">

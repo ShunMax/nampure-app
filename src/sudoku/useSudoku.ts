@@ -5,10 +5,19 @@ import type { Difficulty, SudokuActions, SudokuState } from './types'
 
 const STORAGE_KEY = 'sudoku-state-v1'
 
-export function useSudoku(): [SudokuState, SudokuActions, React.Dispatch<Action>] {
-  const [state, dispatch] = useReducer(reducer, undefined)
+function init() {
+  // start with initial state from reducer by dispatching a dummy NEW_GAME later
+  // but we can also just call a tiny bootstrap by creating a temporary state-like structure
+  // Simpler: call reducer with an initial object built same as buildInitialState via a NEW_GAME after mount
+  // Here we seed with an empty object cast then immediately NEW_GAME in effect; to satisfy types, create a minimal state-like fallback
+  // However better: import a factory would be nicer; for now we'll mimic by dispatch on mount
+  return {} as unknown as SudokuState
+}
 
-  // load
+export function useSudoku(): [SudokuState, SudokuActions, React.Dispatch<Action>] {
+  const [state, dispatch] = useReducer(reducer, undefined as unknown as SudokuState, init as unknown as () => SudokuState)
+
+  // load / bootstrap initial game
   useEffect(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY)
@@ -22,6 +31,8 @@ export function useSudoku(): [SudokuState, SudokuActions, React.Dispatch<Action>
           dispatch({ type: 'SELECT', index: null })
           // We'll rely on controlled UI that will set values via SOLVE/INPUT/HINT in future improvements
         }, 0)
+      } else {
+        dispatch({ type: 'NEW_GAME', difficulty: 'easy' })
       }
     } catch {
       // ignore

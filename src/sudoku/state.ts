@@ -1,5 +1,5 @@
 import { NUM_CELLS } from './types'
-import type { Difficulty, Grid, HistoryEntry, NotesBitmask, SudokuState } from './types'
+import type { Difficulty, HistoryEntry, NotesBitmask, SudokuState } from './types'
 import { buildGivenFromPuzzle, cloneGrid, computeErrors, getHintFromSolution, parseGridString, solve, pruneNotesForPlacement } from './utils'
 import { PRESETS } from './presets'
 
@@ -7,41 +7,7 @@ function emptyNotes(): NotesBitmask {
   return new Array(NUM_CELLS).fill(0)
 }
 
-function buildInitialState(): SudokuState {
-  // default to first easy preset
-  const first = PRESETS.find((p) => p.difficulty === 'easy')!
-  const puzzle = parseGridString(first.puzzle)
-  // Prefer provided solution; if invalid or absent, compute
-  const solutionFromPreset = (() => {
-    try {
-      return parseGridString(first.solution)
-    } catch {
-      return null
-    }
-  })()
-  const solution = solutionFromPreset ?? (solve(puzzle) ?? cloneGrid(puzzle))
-  const given = buildGivenFromPuzzle(puzzle)
-  return {
-    puzzleId: first.id,
-    difficulty: first.difficulty,
-    given,
-    puzzle,
-    solution,
-    grid: cloneGrid(puzzle),
-    notes: emptyNotes(),
-    showNotes: false,
-    errors: new Array<boolean>(NUM_CELLS).fill(false),
-    selectedIndex: null,
-    notesMode: false,
-    autoNotes: true,
-    undoStack: [],
-    redoStack: [],
-    moveCount: 0,
-    startedAt: Date.now(),
-    elapsedMsAccum: 0,
-    running: true,
-  }
-}
+// initial state is created via NEW_GAME action on mount
 
 export type Action =
   | { type: 'NEW_GAME'; difficulty: Difficulty; presetId?: string }
@@ -109,8 +75,7 @@ function choosePreset(difficulty: Difficulty, presetId?: string) {
   return { chosenId: chosen.id, puzzle, solution }
 }
 
-export function reducer(state: SudokuState | undefined, action: Action): SudokuState {
-  if (!state) return buildInitialState()
+export function reducer(state: SudokuState, action: Action): SudokuState {
   switch (action.type) {
     case 'NEW_GAME': {
       const { chosenId, puzzle, solution } = choosePreset(action.difficulty, action.presetId)
