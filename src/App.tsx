@@ -28,7 +28,7 @@ function App() {
 
   return (
     <div className="app">
-      <Toolbar onNew={actions.newGame} onCheck={actions.check} onUndo={actions.undo} onRedo={actions.redo} />
+      <Toolbar onCheck={actions.check} onUndo={actions.undo} onRedo={actions.redo} />
       <div className="main sudoku-main">
         <Board
           grid={state.grid}
@@ -43,11 +43,7 @@ function App() {
           <div className="panel-section">
             <NumberPad onInput={handleInput} onClear={actions.clearCell} onToggleNotes={actions.toggleNotesMode} notesMode={state.notesMode} />
           </div>
-          <div className="panel-section panel-actions">
-            <button className="btn" onClick={actions.toggleAutoNotes}>自動メモ {state.autoNotes ? 'ON' : 'OFF'}</button>
-            <button className="btn" onClick={actions.toggleShowNotes}>メモ表示 {state.showNotes ? 'ON' : 'OFF'}</button>
-            <button className="btn" onClick={() => { if (confirm('盤面を初期状態に戻します。よろしいですか？')) actions.reset() }}>リセット</button>
-          </div>
+          <div className="panel-section panel-actions" style={{ display: 'none' }} />
           <div className="panel-status">
             <div className="status-item">タイマー: {Math.floor(getElapsedMs(state)/1000/60)}:{String(Math.floor(getElapsedMs(state)/1000)%60).padStart(2,'0')}</div>
             <div className="status-item">手数: {state.moveCount}</div>
