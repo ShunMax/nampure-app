@@ -1,5 +1,5 @@
 import React from 'react'
-import type { Difficulty } from '../sudoku/types'
+// no difficulty controls in header; remove unused imports
 
 interface ToolbarProps {
   onCheck: () => void
