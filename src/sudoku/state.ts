@@ -7,6 +7,41 @@ function emptyNotes(): NotesBitmask {
   return new Array(NUM_CELLS).fill(0)
 }
 
+// Exported so hooks can initialize with a valid state
+export function buildInitialState(): SudokuState {
+  const first = PRESETS.find((p) => p.difficulty === 'easy')!
+  const puzzle = parseGridString(first.puzzle)
+  const solutionFromPreset = (() => {
+    try {
+      return parseGridString(first.solution)
+    } catch {
+      return null
+    }
+  })()
+  const solution = solutionFromPreset ?? (solve(puzzle) ?? cloneGrid(puzzle))
+  const given = buildGivenFromPuzzle(puzzle)
+  return {
+    puzzleId: first.id,
+    difficulty: first.difficulty,
+    given,
+    puzzle,
+    solution,
+    grid: cloneGrid(puzzle),
+    notes: emptyNotes(),
+    showNotes: false,
+    errors: new Array<boolean>(NUM_CELLS).fill(false),
+    selectedIndex: null,
+    notesMode: false,
+    autoNotes: true,
+    undoStack: [],
+    redoStack: [],
+    moveCount: 0,
+    startedAt: Date.now(),
+    elapsedMsAccum: 0,
+    running: true,
+  }
+}
+
 // initial state is created via NEW_GAME action on mount
 
 export type Action =

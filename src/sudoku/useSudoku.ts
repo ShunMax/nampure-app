@@ -1,21 +1,12 @@
 import { useEffect, useReducer } from 'react'
-import { reducer } from './state'
+import { reducer, buildInitialState } from './state'
 import type { Action } from './state'
 import type { Difficulty, SudokuActions, SudokuState } from './types'
 
 const STORAGE_KEY = 'sudoku-state-v1'
 
-function init() {
-  // start with initial state from reducer by dispatching a dummy NEW_GAME later
-  // but we can also just call a tiny bootstrap by creating a temporary state-like structure
-  // Simpler: call reducer with an initial object built same as buildInitialState via a NEW_GAME after mount
-  // Here we seed with an empty object cast then immediately NEW_GAME in effect; to satisfy types, create a minimal state-like fallback
-  // However better: import a factory would be nicer; for now we'll mimic by dispatch on mount
-  return {} as unknown as SudokuState
-}
-
 export function useSudoku(): [SudokuState, SudokuActions, React.Dispatch<Action>] {
-  const [state, dispatch] = useReducer(reducer, undefined as unknown as SudokuState, init as unknown as () => SudokuState)
+  const [state, dispatch] = useReducer(reducer, undefined as unknown as SudokuState, buildInitialState as unknown as () => SudokuState)
 
   // load / bootstrap initial game
   useEffect(() => {
